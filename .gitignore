@@ -1,0 +1,17 @@
+node_modules/
+dist/
+release/
+release-build/
+release-final/
+release-kitty-v1/
+.npm-cache/
+.npmrc
+qa/
+audit/
+audit-*/
+design-references/
+design-qa.md
+*.log
+.env
+.env.*
+!.env.example

@@ -1,0 +1,71 @@
+{
+  "name": "focus-calendar",
+  "version": "1.0.2",
+  "description": "A desktop calendar and task reminder application.",
+  "author": "Aaron",
+  "homepage": "https://github.com/275446201-droid/focus-calendar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/275446201-droid/focus-calendar.git"
+  },
+  "private": true,
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "desktop": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
+    "build": "vite build",
+    "desktop:build": "npm run build && node scripts/build-windows.mjs",
+    "preview": "vite preview",
+    "start": "electron ."
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "@vitejs/plugin-react": "5.0.4",
+    "electron-updater": "^6.8.9",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "vite": "6.4.2"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "electron": "^43.1.0",
+    "electron-builder": "^26.15.3",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.focuscalendar.desktop",
+    "productName": "专注日历",
+    "copyright": "Copyright © 2026 Aaron",
+    "directories": {
+      "output": "release-build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "assets/focus-calendar.ico",
+      "package.json"
+    ],
+    "win": {
+      "icon": "assets/focus-calendar.ico",
+      "target": "nsis",
+      "artifactName": "FocusCalendar-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "275446201-droid",
+        "repo": "focus-calendar",
+        "releaseType": "release"
+      }
+    ]
+  }
+}

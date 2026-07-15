@@ -636,6 +636,29 @@ input:focus-visible {
   font-size: 17px;
 }
 
+.mini-calendar > header strong {
+  flex: 1;
+  text-align: center;
+}
+
+.today-jump-button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.today-jump-button:hover,
+.today-jump-button.active {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 10%, transparent);
+}
+
 .calendar-grid {
   min-height: 0;
   display: grid;
@@ -668,6 +691,22 @@ input:focus-visible {
   font-size: 14px;
 }
 
+.calendar-day.current-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  line-height: 1;
+}
+
+.calendar-day .today-label {
+  color: var(--cyan);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+}
+
 .calendar-day:hover {
   background: rgba(67, 191, 255, 0.12);
 }
@@ -676,6 +715,10 @@ input:focus-visible {
   background: var(--cyan-strong);
   color: white;
   box-shadow: 0 0 18px rgba(21, 156, 241, 0.42);
+}
+
+.calendar-day.selected .today-label {
+  color: currentColor;
 }
 
 .calendar-day.outside {
@@ -2109,6 +2152,14 @@ input:focus-visible {
   box-shadow: 0 7px 16px rgba(223, 88, 108, 0.22);
 }
 
+.theme-hello-kitty .calendar-day .today-label {
+  color: #df586c;
+}
+
+.theme-hello-kitty .calendar-day.selected .today-label {
+  color: white;
+}
+
 .theme-hello-kitty .calendar-day.outside {
   color: #bdb6b8;
 }
@@ -2627,6 +2678,10 @@ input:focus-visible {
 }
 
 @media (max-height: 560px) and (min-width: 700px) {
+  .calendar-day .today-label {
+    display: none;
+  }
+
   .theme-hello-kitty .calendar-side {
     grid-template-rows: minmax(146px, 1fr) 94px;
     gap: 8px;

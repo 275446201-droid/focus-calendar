@@ -56,7 +56,7 @@ const COPY = {
     weekdays: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
     weekdayShort: ["日", "一", "二", "三", "四", "五", "六"],
     types: { day: "日任务", week: "周任务", month: "月任务" },
-    today: "今天", todayTasks: "今日任务", selectedTasks: "当天任务", thisWeek: "本周", thisMonth: "本月",
+    today: "今天", calendarToday: "今日", goToToday: "返回今天", todayTasks: "今日任务", selectedTasks: "当天任务", thisWeek: "本周", thisMonth: "本月",
     addTask: "添加任务", quickAdd: "快速添加", add: "添加", settingsTitle: "显示与提醒设置", desktopDisplay: "桌面显示",
     theme: "界面主题", classicTheme: "深色经典", kittyTheme: "Hello Kitty", kittyThemeHint: "暖白与珊瑚粉主题，完整模式、迷你模式与弹窗会同步换肤。",
     language: "界面语言", chinese: "中文", english: "English", opacity: "窗口透明度", windowLevel: "窗口层级",
@@ -66,14 +66,14 @@ const COPY = {
     miniCalendar: "迷你日历", upcoming: "后续安排", noUpcoming: "暂无后续安排", noTasks: "这一天还没有任务，点击添加", addToday: "添加今天的任务",
     newTask: "新建任务", editTask: "编辑任务", arrangeWork: "安排你的工作", adjustTask: "调整任务安排",
     taskName: "任务名称", taskPlaceholder: "例如：准备项目汇报", date: "日期", time: "时间", reminder: "到点提醒",
-    category: "任务归类", repeat: "重复频率", noRepeat: "不重复", weekly: "每周重复", monthly: "每月重复",
+    category: "任务归类", repeat: "重复频率", noRepeat: "不重复", daily: "每天重复", weekly: "每周重复", monthly: "每月重复",
     categoryHint: "决定任务显示在日、周或月任务区域。",
-    repeatHintWeekly: "以后每周的同一星期自动生成新任务。", repeatHintMonthly: "以后每月的同一日期自动生成新任务。",
+    repeatHintDaily: "以后每天自动生成新任务。", repeatHintWeekly: "以后每周的同一星期自动生成新任务。", repeatHintMonthly: "以后每月的同一日期自动生成新任务。",
     editScope: "修改范围", occurrenceOnly: "仅修改本次", wholeSeries: "修改整个循环",
     deleteTask: "删除任务", deleteOccurrence: "删除本次", stopSeries: "停止后续循环", cancel: "取消", save: "保存修改",
     markDone: "标记完成", markUndone: "标记未完成", edit: "编辑", selectedDatePrefix: "输入任务，添加到",
     enterAdd: "Enter 添加", closeQuick: "关闭快速添加", switchCompact: "切换迷你模式", expand: "展开完整模式", displaySettings: "显示设置",
-    microMode: "迷你模式", viewAll: "查看全部", allWeekTasks: "本周全部任务", allMonthTasks: "本月全部任务", completedCount: "已完成",
+    microMode: "迷你模式", viewAll: "查看全部", allDayTasks: "当天全部任务", allWeekTasks: "本周全部任务", allMonthTasks: "本月全部任务", completedCount: "已完成",
     overdueTitle: "处理未完成任务", overdueText: "以下任务已经过期，请选择如何处理。", rolloverToday: "顺延到今天", keepDate: "保留原日期", abandon: "标记放弃",
     dataBackup: "数据备份", exportData: "导出备份", importData: "导入备份", openDataFolder: "打开数据目录", dataImported: "数据已导入", importFailed: "备份文件无效或导入失败",
     aboutApp: "关于专注日历", versionLabel: "版本", developerLabel: "开发者",
@@ -88,7 +88,7 @@ const COPY = {
     weekdays: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     weekdayShort: ["S", "M", "T", "W", "T", "F", "S"],
     types: { day: "Day", week: "Week", month: "Month" },
-    today: "Today", todayTasks: "Today", selectedTasks: "Selected day", thisWeek: "This week", thisMonth: "This month",
+    today: "Today", calendarToday: "Today", goToToday: "Go to today", todayTasks: "Today", selectedTasks: "Selected day", thisWeek: "This week", thisMonth: "This month",
     addTask: "Add task", quickAdd: "Quick add", add: "Add", settingsTitle: "Display & reminders", desktopDisplay: "Desktop display",
     theme: "Theme", classicTheme: "Classic dark", kittyTheme: "Hello Kitty", kittyThemeHint: "Warm white and coral pink styling across full, mini, and dialog views.",
     language: "Language", chinese: "中文", english: "English", opacity: "Window opacity", windowLevel: "Window level",
@@ -98,14 +98,14 @@ const COPY = {
     miniCalendar: "Mini calendar", upcoming: "Upcoming", noUpcoming: "No upcoming tasks", noTasks: "No tasks for this day. Click to add one.", addToday: "Add a task for today",
     newTask: "New task", editTask: "Edit task", arrangeWork: "Plan your work", adjustTask: "Adjust task",
     taskName: "Task name", taskPlaceholder: "For example: Prepare project update", date: "Date", time: "Time", reminder: "Reminder",
-    category: "Task category", repeat: "Repeat frequency", noRepeat: "Does not repeat", weekly: "Repeat weekly", monthly: "Repeat monthly",
+    category: "Task category", repeat: "Repeat frequency", noRepeat: "Does not repeat", daily: "Repeat daily", weekly: "Repeat weekly", monthly: "Repeat monthly",
     categoryHint: "Controls whether the task appears in the day, week, or month area.",
-    repeatHintWeekly: "A new task will be created on the same weekday every week.", repeatHintMonthly: "A new task will be created on the same date every month.",
+    repeatHintDaily: "A new task will be created every day.", repeatHintWeekly: "A new task will be created on the same weekday every week.", repeatHintMonthly: "A new task will be created on the same date every month.",
     editScope: "Apply changes to", occurrenceOnly: "This task only", wholeSeries: "Entire series",
     deleteTask: "Delete task", deleteOccurrence: "Delete this one", stopSeries: "Stop future repeats", cancel: "Cancel", save: "Save changes",
     markDone: "Mark complete", markUndone: "Mark incomplete", edit: "Edit", selectedDatePrefix: "Add a task to ",
     enterAdd: "Enter to add", closeQuick: "Close quick add", switchCompact: "Switch to mini mode", expand: "Expand full mode", displaySettings: "Display settings",
-    microMode: "Mini mode", viewAll: "View all", allWeekTasks: "All tasks this week", allMonthTasks: "All tasks this month", completedCount: "Completed",
+    microMode: "Mini mode", viewAll: "View all", allDayTasks: "All tasks for this day", allWeekTasks: "All tasks this week", allMonthTasks: "All tasks this month", completedCount: "Completed",
     overdueTitle: "Handle unfinished tasks", overdueText: "These tasks are overdue. Choose what to do with them.", rolloverToday: "Move to today", keepDate: "Keep original date", abandon: "Mark abandoned",
     dataBackup: "Data backup", exportData: "Export backup", importData: "Import backup", openDataFolder: "Open data folder", dataImported: "Data imported", importFailed: "Invalid backup or import failed",
     aboutApp: "About Focus Calendar", versionLabel: "Version", developerLabel: "Developer",
@@ -214,7 +214,13 @@ function occurrenceDates(template, throughDate) {
   const limit = end < through ? end : through;
   if (anchor > limit) return dates;
 
-  if (template.frequency === "weekly") {
+  if (template.frequency === "daily") {
+    let cursor = new Date(anchor);
+    for (let count = 0; cursor <= limit && count < 3650; count += 1) {
+      dates.push(localISO(cursor));
+      cursor = addDays(cursor, 1);
+    }
+  } else if (template.frequency === "weekly") {
     let cursor = new Date(anchor);
     for (let count = 0; cursor <= limit && count < 520; count += 1) {
       dates.push(localISO(cursor));
@@ -317,6 +323,7 @@ function CalendarGrid({ cursor, selectedDate, onSelect, copy, compact = false })
   const first = new Date(year, month, 1);
   const start = addDays(first, -first.getDay());
   const cells = Array.from({ length: 42 }, (_, index) => addDays(start, index));
+  const calendarTodayISO = localISO(new Date());
 
   return (
     <div className={`calendar-grid ${compact ? "is-compact" : ""}`}>
@@ -324,14 +331,16 @@ function CalendarGrid({ cursor, selectedDate, onSelect, copy, compact = false })
       {cells.map((date) => {
         const iso = localISO(date);
         const outside = date.getMonth() !== month;
+        const isToday = iso === calendarTodayISO;
         return (
           <button
-            className={`calendar-day ${iso === selectedDate ? "selected" : ""} ${outside ? "outside" : ""} ${date.getDay() === 0 ? "sunday" : ""}`}
+            className={`calendar-day ${iso === selectedDate ? "selected" : ""} ${isToday ? "current-day" : ""} ${outside ? "outside" : ""} ${date.getDay() === 0 ? "sunday" : ""}`}
             key={iso}
             onClick={() => onSelect(iso)}
             aria-label={formatMonthDay(date, copy)}
           >
             {date.getDate()}
+            {isToday && <span className="today-label">{copy.calendarToday}</span>}
           </button>
         );
       })}
@@ -498,6 +507,7 @@ function TaskEditor({ selectedDate, onClose, onSave, onDelete, copy, initialType
 
   function changeRepeat(nextRepeat) {
     setRepeat(nextRepeat);
+    if (nextRepeat === "daily") setType("day");
     if (nextRepeat === "weekly") setType("week");
     if (nextRepeat === "monthly") setType("month");
   }
@@ -540,10 +550,11 @@ function TaskEditor({ selectedDate, onClose, onSave, onDelete, copy, initialType
           <span>{copy.repeat}</span>
           <select value={repeat} disabled={initialTask?.templateId && editScope === "occurrence"} onChange={(event) => changeRepeat(event.target.value)}>
             <option value="none">{copy.noRepeat}</option>
+            <option value="daily">{copy.daily}</option>
             <option value="weekly">{copy.weekly}</option>
             <option value="monthly">{copy.monthly}</option>
           </select>
-          {repeat !== "none" && <small>{repeat === "weekly" ? copy.repeatHintWeekly : copy.repeatHintMonthly}</small>}
+          {repeat !== "none" && <small>{repeat === "daily" ? copy.repeatHintDaily : repeat === "weekly" ? copy.repeatHintWeekly : copy.repeatHintMonthly}</small>}
         </label>
         <label className="toggle-row">
           <span><Bell /> {copy.reminder}</span>
@@ -843,6 +854,12 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
   const hasSidePanel = settings.showCalendar || upcomingTasks.length > 0;
   const isKittyTheme = settings.theme === "hello-kitty";
 
+  function goToToday() {
+    const current = new Date();
+    setSelectedDate(localISO(current));
+    setCursor(new Date(current.getFullYear(), current.getMonth(), 1));
+  }
+
   function beginWeekPointer(event) {
     if (event.button !== 0) return;
     weekDrag.current = {
@@ -998,6 +1015,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
             <header>
               <button className="icon-button" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}><CaretLeft /></button>
               <strong>{isKittyTheme ? <KittyWhiskers>{formatMonth(cursor, copy)}</KittyWhiskers> : formatMonth(cursor, copy)}</strong>
+              <button className={`today-jump-button ${selectedDate === localISO(new Date()) ? "active" : ""}`} onClick={goToToday} title={copy.goToToday}>{copy.today}</button>
               <button className="icon-button" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}><CaretRight /></button>
             </header>
             <CalendarGrid cursor={cursor} selectedDate={selectedDate} onSelect={setSelectedDate} copy={copy} compact />
@@ -1012,7 +1030,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
           const completed = typeTasks.filter((task) => task.completed).length;
           const pending = typeTasks.length - completed;
           const icon = [kittyHomeDayIcon, kittyHomeWeekIcon, kittyHomeMonthIcon][index];
-          return <button className={`kitty-summary ${meta.color}`} key={type} onClick={() => type === "day" ? onAdd(type) : onViewAll(type)}>
+          return <button className={`kitty-summary ${meta.color}`} key={type} onClick={() => onViewAll(type)}>
             <header><span><img className="kitty-summary-icon" src={icon} alt="" /> {copy.types[type]} <img className="kitty-summary-bow" src={kittyHomeTinyBow} alt="" /></span></header>
             <div className="kitty-summary-body">
               <div className="kitty-total"><strong>{typeTasks.length}</strong><span>{typeTasks.length === 1 ? copy.taskUnitOne : copy.taskUnitMany}</span></div>
@@ -1036,7 +1054,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
             </div>
             <footer className="task-group-actions">
               <button className="text-button" onClick={() => onAdd(type)}><Plus /> {copy.add} {copy.types[type]}</button>
-              {type !== "day" && <button className="view-all-button" onClick={() => onViewAll(type)}>{copy.viewAll} <ArrowRight /></button>}
+              <button className="view-all-button" onClick={() => onViewAll(type)}>{copy.viewAll} <ArrowRight /></button>
             </footer>
           </div>
         ))}
@@ -1047,7 +1065,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
 
 function PeriodTasksModal({ type, tasks, copy, onToggle, onEdit, onAdd, onClose }) {
   const completed = tasks.filter((task) => task.completed).length;
-  const title = type === "week" ? copy.allWeekTasks : copy.allMonthTasks;
+  const title = type === "day" ? copy.allDayTasks : type === "week" ? copy.allWeekTasks : copy.allMonthTasks;
   return (
     <div className="modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
       <section className={`period-tasks-panel glass-panel ${TYPE_META[type].color}`} aria-label={title}>
@@ -1061,7 +1079,7 @@ function PeriodTasksModal({ type, tasks, copy, onToggle, onEdit, onAdd, onClose 
         </header>
         <div className="period-task-list">
           {tasks.length ? tasks.map((task) => (
-            <TaskRow key={task.id} task={task} onToggle={onToggle} onEdit={onEdit} copy={copy} showDate />
+            <TaskRow key={task.id} task={task} onToggle={onToggle} onEdit={onEdit} copy={copy} showDate={type !== "day"} />
           )) : <button className="empty-state" onClick={onAdd}><Plus /> {copy.add} {copy.types[type]}</button>}
         </div>
         <footer>
@@ -1177,6 +1195,9 @@ export function App() {
   const periodTasks = useMemo(() => {
     if (!taskListView) return [];
     const selected = fromISO(selectedDate);
+    if (taskListView === "day") {
+      return sortTasks(tasks.filter((task) => task.type === "day" && task.date === selectedDate));
+    }
     if (taskListView === "week") {
       const first = startOfWeek(selected);
       const last = addDays(first, 6);

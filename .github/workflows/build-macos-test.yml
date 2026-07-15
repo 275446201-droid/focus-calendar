@@ -2,6 +2,9 @@ name: Build unsigned macOS test app
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - agent/macos-test-build
 
 permissions:
   contents: read

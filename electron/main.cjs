@@ -63,8 +63,9 @@ async function checkForUpdates({ manual = false } = {}) {
 }
 
 function setupAutoUpdater() {
-  autoUpdater.autoDownload = false;
+  autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.disableDifferentialDownload = false;
 
   autoUpdater.on("checking-for-update", () => publishUpdateState({ status: "checking", error: null }));
   autoUpdater.on("update-available", (info) => publishUpdateState({
@@ -327,19 +328,9 @@ ipcMain.handle("settings:load", async () => settingsCache);
 ipcMain.handle("settings:save", async (_event, settings) => saveSettings(settings));
 ipcMain.handle("update:get-state", () => updateState);
 ipcMain.handle("update:check", () => checkForUpdates({ manual: true }));
-ipcMain.handle("update:download", async () => {
-  if (!app.isPackaged || updateState.status !== "available") return updateState;
-  publishUpdateState({ status: "downloading", progress: 0, error: null });
-  try {
-    await autoUpdater.downloadUpdate();
-  } catch (error) {
-    publishUpdateState({ status: "error", error: normalizeUpdateError(error) });
-  }
-  return updateState;
-});
 ipcMain.handle("update:install", () => {
   if (updateState.status !== "downloaded") return false;
-  setImmediate(() => autoUpdater.quitAndInstall(false, true));
+  setImmediate(() => autoUpdater.quitAndInstall(true, true));
   return true;
 });
 

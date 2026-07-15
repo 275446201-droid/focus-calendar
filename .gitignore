@@ -4,6 +4,8 @@ release/
 release-build/
 release-final/
 release-kitty-v1/
+release-mac/
+release-mac-github/
 .npm-cache/
 .npmrc
 qa/

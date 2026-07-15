@@ -561,6 +561,7 @@ function TaskEditor({ selectedDate, onClose, onSave, onDelete, copy, initialType
 }
 
 function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy, onExport, onImport, onOpenData, onExit, updateState, onCheckUpdate, onDownloadUpdate, onInstallUpdate }) {
+  const supportsAppUpdates = window.desktopAPI?.platform !== "darwin";
   const fileInput = useRef(null);
   const [backupMessage, setBackupMessage] = useState("");
   function update(key, value) {
@@ -680,7 +681,7 @@ function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy
           <input ref={fileInput} className="hidden-file-input" type="file" accept="application/json,.json" onChange={(event) => importBackup(event.target.files?.[0])} />
           {backupMessage && <p>{backupMessage}</p>}
         </section>
-        <section className="update-setting" aria-label={copy.softwareUpdate}>
+        {supportsAppUpdates && <section className="update-setting" aria-label={copy.softwareUpdate}>
           <div>
             <h3>{copy.softwareUpdate}</h3>
             <p className={`update-status status-${updateState.status}`} title={updateState.error || ""}>{updateStatus}</p>
@@ -691,7 +692,7 @@ function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy
             {updateState.status === "downloaded" && <button type="button" className="primary-button" onClick={onInstallUpdate}><ArrowsClockwise /> {copy.restartAndInstall}</button>}
             {!['available', 'downloaded', 'downloading', 'development'].includes(updateState.status) && <button type="button" className="secondary-button" onClick={onCheckUpdate} disabled={updateState.status === "checking"}><ArrowsClockwise /> {updateState.status === "error" ? copy.retryUpdate : copy.checkForUpdates}</button>}
           </div>
-        </section>
+        </section>}
         <section className="about-setting" aria-label={copy.aboutApp}>
           <span className="about-app-icon" aria-hidden="true"><CalendarCheck weight="duotone" /></span>
           <div>

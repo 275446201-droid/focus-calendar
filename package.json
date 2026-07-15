@@ -16,21 +16,22 @@
     "desktop": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "vite build",
     "desktop:build": "npm run build && node scripts/build-windows.mjs",
+    "desktop:build:mac": "npm run build && node scripts/build-macos.mjs",
     "preview": "vite preview",
     "start": "electron ."
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
-    "@vitejs/plugin-react": "5.0.4",
     "electron-updater": "^6.8.9",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "vite": "6.4.2"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "5.0.4",
     "concurrently": "^10.0.3",
     "electron": "^43.1.0",
     "electron-builder": "^26.15.3",
+    "vite": "6.4.2",
     "wait-on": "^9.0.10"
   },
   "build": {
@@ -44,12 +45,22 @@
       "dist/**/*",
       "electron/**/*",
       "assets/focus-calendar.ico",
+      "assets/focus-calendar-icon.png",
       "package.json"
     ],
     "win": {
       "icon": "assets/focus-calendar.ico",
       "target": "nsis",
       "artifactName": "FocusCalendar-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "icon": "assets/focus-calendar-icon.png",
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "artifactName": "FocusCalendar-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,

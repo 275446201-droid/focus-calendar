@@ -1,0 +1,38 @@
+name: Build unsigned macOS test app
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-macos:
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build unsigned universal macOS packages
+        run: npm run desktop:build:mac
+
+      - name: Upload macOS test packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: FocusCalendar-macOS-unsigned
+          path: |
+            release-mac/*.dmg
+            release-mac/*.zip
+          if-no-files-found: error
+          retention-days: 14

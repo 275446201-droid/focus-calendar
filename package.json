@@ -16,6 +16,7 @@
     "desktop": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && electron .\"",
     "build": "vite build",
     "desktop:build": "npm run build && node scripts/build-windows.mjs",
+    "desktop:build:mac": "npm run build && node scripts/build-macos.mjs",
     "preview": "vite preview",
     "start": "electron ."
   },
@@ -44,12 +45,22 @@
       "dist/**/*",
       "electron/**/*",
       "assets/focus-calendar.ico",
+      "assets/focus-calendar-icon.png",
       "package.json"
     ],
     "win": {
       "icon": "assets/focus-calendar.ico",
       "target": "nsis",
       "artifactName": "FocusCalendar-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "icon": "assets/focus-calendar-icon.png",
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "artifactName": "FocusCalendar-${version}-${arch}.${ext}"
     },
     "nsis": {
       "oneClick": false,

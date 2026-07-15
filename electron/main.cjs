@@ -50,6 +50,9 @@ function normalizeUpdateError(error) {
 }
 
 async function checkForUpdates({ manual = false } = {}) {
+  if (process.platform === "darwin") {
+    return publishUpdateState({ status: "disabled", error: null, manual });
+  }
   if (!app.isPackaged) {
     return publishUpdateState({ status: "development", error: null });
   }
@@ -63,6 +66,8 @@ async function checkForUpdates({ manual = false } = {}) {
 }
 
 function setupAutoUpdater() {
+  if (process.platform === "darwin") return;
+
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
 

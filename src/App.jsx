@@ -78,7 +78,7 @@ const COPY = {
     dataBackup: "数据备份", exportData: "导出备份", importData: "导入备份", openDataFolder: "打开数据目录", dataImported: "数据已导入", importFailed: "备份文件无效或导入失败",
     aboutApp: "关于专注日历", versionLabel: "版本", developerLabel: "开发者",
     softwareUpdate: "软件更新", currentVersion: "当前版本", checkForUpdates: "检查更新", checkingUpdate: "正在检查更新…",
-    updateAvailable: "发现新版本", downloadUpdate: "下载更新", downloadingUpdate: "正在下载", updateReady: "更新已准备好",
+    updateAvailable: "发现新版本，正在后台下载", downloadingUpdate: "正在后台下载", updateReady: "更新已准备好",
     restartAndInstall: "重启并安装", updateCurrent: "已是最新版本", updateFailed: "暂时无法检查或下载更新，不影响正常使用。", retryUpdate: "重试", updateDev: "安装版中可检查更新",
     taskUnitOne: "个任务", taskUnitMany: "个任务", pendingStatus: "待完成", progressStatus: "进行中", completedStatus: "已完成",
     allDone: "今天的任务已完成", moveTaskUp: "上移任务", moveTaskDown: "下移任务",
@@ -110,7 +110,7 @@ const COPY = {
     dataBackup: "Data backup", exportData: "Export backup", importData: "Import backup", openDataFolder: "Open data folder", dataImported: "Data imported", importFailed: "Invalid backup or import failed",
     aboutApp: "About Focus Calendar", versionLabel: "Version", developerLabel: "Developer",
     softwareUpdate: "Software update", currentVersion: "Current version", checkForUpdates: "Check for updates", checkingUpdate: "Checking for updates…",
-    updateAvailable: "New version available", downloadUpdate: "Download update", downloadingUpdate: "Downloading", updateReady: "Update ready",
+    updateAvailable: "New version found. Downloading in the background", downloadingUpdate: "Downloading in the background", updateReady: "Update ready",
     restartAndInstall: "Restart and install", updateCurrent: "You're up to date", updateFailed: "Unable to check or download right now. You can keep using the app.", retryUpdate: "Retry", updateDev: "Update checks are available in the installed app",
     taskUnitOne: "task", taskUnitMany: "tasks", pendingStatus: "Pending", progressStatus: "In progress", completedStatus: "Completed",
     allDone: "All tasks complete", moveTaskUp: "Move task up", moveTaskDown: "Move task down",
@@ -571,7 +571,7 @@ function TaskEditor({ selectedDate, onClose, onSave, onDelete, copy, initialType
   );
 }
 
-function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy, onExport, onImport, onOpenData, onExit, updateState, onCheckUpdate, onDownloadUpdate, onInstallUpdate }) {
+function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy, onExport, onImport, onOpenData, onExit, updateState, onCheckUpdate, onInstallUpdate }) {
   const fileInput = useRef(null);
   const [backupMessage, setBackupMessage] = useState("");
   function update(key, value) {
@@ -698,7 +698,6 @@ function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy
           </div>
           {updateState.status === "downloading" && <progress max="100" value={updateState.progress || 0} aria-label={updateStatus} />}
           <div className="update-actions">
-            {updateState.status === "available" && <button type="button" className="primary-button" onClick={onDownloadUpdate}><DownloadSimple /> {copy.downloadUpdate}</button>}
             {updateState.status === "downloaded" && <button type="button" className="primary-button" onClick={onInstallUpdate}><ArrowsClockwise /> {copy.restartAndInstall}</button>}
             {!['available', 'downloaded', 'downloading', 'development'].includes(updateState.status) && <button type="button" className="secondary-button" onClick={onCheckUpdate} disabled={updateState.status === "checking"}><ArrowsClockwise /> {updateState.status === "error" ? copy.retryUpdate : copy.checkForUpdates}</button>}
           </div>
@@ -1507,7 +1506,7 @@ export function App() {
       )}
       {taskListView && <PeriodTasksModal type={taskListView} tasks={periodTasks} copy={copy} onToggle={toggleTask} onEdit={openEditor} onAdd={() => setEditor({ type: taskListView })} onClose={() => setTaskListView(null)} />}
       {editor && <TaskEditor selectedDate={selectedDate} initialType={editor.type} initialTask={editor.task} initialRepeat={editor.repeat} copy={copy} onClose={() => setEditor(null)} onSave={saveTask} onDelete={deleteTask} />}
-      {settingsOpen && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setSettingsOpen(false)} onClickThroughChange={(value) => setClickThroughNotice(value ? "enabled" : "disabled")} copy={copy} onExport={exportData} onImport={importData} onOpenData={() => window.desktopAPI?.openDataFolder?.()} onExit={() => window.desktopAPI?.closeWindow?.()} updateState={updateState} onCheckUpdate={() => window.desktopAPI?.checkForUpdates?.()} onDownloadUpdate={() => window.desktopAPI?.downloadUpdate?.()} onInstallUpdate={() => window.desktopAPI?.installUpdate?.()} />}
+      {settingsOpen && <SettingsPanel settings={settings} onChange={setSettings} onClose={() => setSettingsOpen(false)} onClickThroughChange={(value) => setClickThroughNotice(value ? "enabled" : "disabled")} copy={copy} onExport={exportData} onImport={importData} onOpenData={() => window.desktopAPI?.openDataFolder?.()} onExit={() => window.desktopAPI?.closeWindow?.()} updateState={updateState} onCheckUpdate={() => window.desktopAPI?.checkForUpdates?.()} onInstallUpdate={() => window.desktopAPI?.installUpdate?.()} />}
       {clickThroughNotice && <div className="click-through-toast" role="status">{clickThroughNotice === "enabled" ? copy.clickEnabled : copy.clickDisabled}</div>}
       {!editor && !settingsOpen && overdueTasks.length > 0 && <OverduePanel tasks={overdueTasks} copy={copy} onAction={handleOverdue} />}
     </main>

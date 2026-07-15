@@ -10,7 +10,6 @@ contextBridge.exposeInMainWorld("desktopAPI", {
   openDataFolder: () => ipcRenderer.invoke("data:open-folder"),
   getUpdateState: () => ipcRenderer.invoke("update:get-state"),
   checkForUpdates: () => ipcRenderer.invoke("update:check"),
-  downloadUpdate: () => ipcRenderer.invoke("update:download"),
   installUpdate: () => ipcRenderer.invoke("update:install"),
   onUpdateStateChanged: (callback) => {
     const listener = (_event, value) => callback(value);

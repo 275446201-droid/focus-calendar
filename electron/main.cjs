@@ -12,6 +12,7 @@ let settingsCache = {
   clickThrough: false,
   openAtLogin: false,
   showCalendar: true,
+  showWeekNumbers: true,
   sound: true,
   language: "zh",
   theme: "classic",

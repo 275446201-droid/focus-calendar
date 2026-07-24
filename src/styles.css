@@ -253,6 +253,27 @@ input:focus-visible {
   color: var(--cyan);
 }
 
+.week-number-badge {
+  min-width: 42px;
+  height: 26px;
+  margin-left: 9px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--cyan) 48%, transparent);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 10%, transparent);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+  line-height: 1;
+  vertical-align: middle;
+  transform: translateY(-3px);
+}
+
 .panel-header p {
   margin: 8px 0 0;
   color: var(--muted);
@@ -665,6 +686,34 @@ input:focus-visible {
   grid-template-columns: repeat(7, minmax(28px, 1fr));
   grid-template-rows: repeat(7, minmax(0, 1fr));
   gap: clamp(3px, 0.6vh, 6px);
+}
+
+.calendar-grid.with-week-numbers {
+  grid-template-columns: minmax(22px, 0.68fr) repeat(7, minmax(24px, 1fr));
+}
+
+.week-number-heading,
+.calendar-week-number {
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  color: var(--violet);
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+.week-number-heading {
+  color: var(--muted);
+  font-size: 9px;
+  opacity: 0.7;
+}
+
+.calendar-week-number {
+  border-right: 1px solid color-mix(in srgb, var(--violet) 18%, transparent);
+  opacity: 0.86;
 }
 
 .calendar-grid .weekday {
@@ -1083,6 +1132,15 @@ input:focus-visible {
   font-size: 15px;
 }
 
+.micro-date .week-number-badge {
+  min-width: 38px;
+  height: 23px;
+  margin-left: 1px;
+  padding: 0 7px;
+  font-size: 11px;
+  transform: none;
+}
+
 .micro-view > section {
   min-height: 0;
   padding: 14px 16px 16px;
@@ -1189,6 +1247,11 @@ input:focus-visible {
 
 .compact-header h1 span {
   color: var(--cyan);
+}
+
+.compact-header .week-number-badge {
+  height: 25px;
+  transform: translateY(-2px);
 }
 
 .compact-columns {
@@ -1936,6 +1999,21 @@ input:focus-visible {
 
 .theme-hello-kitty .panel-header h1 span {
   color: var(--cyan);
+}
+
+.theme-hello-kitty .week-number-badge {
+  border-color: rgba(230, 80, 104, 0.38);
+  color: #e65068;
+  background: rgba(237, 96, 117, 0.09);
+}
+
+.theme-hello-kitty .calendar-week-number {
+  border-right-color: rgba(230, 80, 104, 0.18);
+  color: #d35b79;
+}
+
+.theme-hello-kitty .week-number-heading {
+  color: #9a7a82;
 }
 
 .theme-hello-kitty .kitty-whiskered-title {

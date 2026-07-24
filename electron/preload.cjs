@@ -16,6 +16,11 @@ contextBridge.exposeInMainWorld("desktopAPI", {
     ipcRenderer.on("update:state-changed", listener);
     return () => ipcRenderer.removeListener("update:state-changed", listener);
   },
+  onSystemDateRefresh: (callback) => {
+    const listener = () => callback();
+    ipcRenderer.on("system:date-refresh", listener);
+    return () => ipcRenderer.removeListener("system:date-refresh", listener);
+  },
   onClickThroughChanged: (callback) => {
     const listener = (_event, value) => callback(value);
     ipcRenderer.on("settings:click-through-changed", listener);

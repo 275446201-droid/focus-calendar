@@ -1175,7 +1175,8 @@ function MiniView({ tasks, selectedDate, copy, onToggle, onEdit, onMove, onQuick
 }
 
 export function App() {
-  const today = useMemo(() => new Date(), []);
+  const [today, setToday] = useState(() => new Date());
+  const todayISORef = useRef(localISO(today));
   const [records, setRecords] = useState(() => makeDefaults(today));
   const [hydrated, setHydrated] = useState(false);
   const [selectedDate, setSelectedDate] = useState(localISO(today));
@@ -1207,6 +1208,37 @@ export function App() {
   const todayISO = localISO(today);
   const overdueTasks = useMemo(() => tasks.filter((task) => !task.completed && task.date < todayISO && task.overdueDecisionDate !== todayISO), [tasks, todayISO]);
   const recurrenceRevision = useMemo(() => records.filter(isTemplate).map((item) => JSON.stringify(item)).join("|"), [records]);
+
+  useEffect(() => {
+    const refreshCurrentDate = () => {
+      const current = new Date();
+      const nextTodayISO = localISO(current);
+      const previousTodayISO = todayISORef.current;
+      if (nextTodayISO === previousTodayISO) return;
+
+      todayISORef.current = nextTodayISO;
+      setToday(current);
+      setSelectedDate((currentSelectedDate) => (
+        currentSelectedDate === previousTodayISO ? nextTodayISO : currentSelectedDate
+      ));
+    };
+    const handleVisibilityChange = () => {
+      if (!document.hidden) refreshCurrentDate();
+    };
+
+    refreshCurrentDate();
+    const timer = window.setInterval(refreshCurrentDate, 30_000);
+    window.addEventListener("focus", refreshCurrentDate);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    const unsubscribeSystemDateRefresh = window.desktopAPI?.onSystemDateRefresh?.(refreshCurrentDate);
+
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", refreshCurrentDate);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      unsubscribeSystemDateRefresh?.();
+    };
+  }, []);
 
   useEffect(() => {
     loadTasks().then((saved) => {
@@ -1265,12 +1297,15 @@ export function App() {
 
   useEffect(() => {
     if (!hydrated) return;
-    const horizon = localISO(endOfMonthAfter(fromISO(selectedDate), 2));
+    const selected = fromISO(selectedDate);
+    const currentToday = fromISO(todayISO);
+    const horizonBase = selected > currentToday ? selected : currentToday;
+    const horizon = localISO(endOfMonthAfter(horizonBase, 2));
     setRecords((current) => {
       const next = materializeRecurring(current, horizon);
       return next.length === current.length ? current : next;
     });
-  }, [hydrated, selectedDate, recurrenceRevision]);
+  }, [hydrated, selectedDate, todayISO, recurrenceRevision]);
 
   function toggleTask(id) {
     setRecords((current) => current.map((task) => task.id === id ? { ...task, completed: !task.completed } : task));

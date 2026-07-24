@@ -44,6 +44,12 @@ function publishUpdateState(patch) {
   return updateState;
 }
 
+function notifySystemDateRefresh() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send("system:date-refresh");
+  }
+}
+
 function normalizeUpdateError(error) {
   const message = String(error?.message || error || "Unknown update error");
   return message.replace(/(token|authorization|password)=?[^\s&]*/gi, "$1=[redacted]").slice(0, 500);
@@ -521,8 +527,14 @@ app.whenReady().then(async () => {
   createWindow();
   setupAutoUpdater();
 
-  powerMonitor.on("resume", () => setTimeout(checkDueReminders, 1_500));
-  powerMonitor.on("unlock-screen", () => setTimeout(checkDueReminders, 500));
+  powerMonitor.on("resume", () => {
+    notifySystemDateRefresh();
+    setTimeout(checkDueReminders, 1_500);
+  });
+  powerMonitor.on("unlock-screen", () => {
+    notifySystemDateRefresh();
+    setTimeout(checkDueReminders, 500);
+  });
 
   globalShortcut.register("CommandOrControl+Shift+X", async () => {
     const nextClickThrough = !settingsCache.clickThrough;

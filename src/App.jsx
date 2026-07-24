@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import packageInfo from "../package.json";
 import {
   Alarm,
@@ -62,7 +62,7 @@ const COPY = {
     language: "界面语言", chinese: "中文", english: "English", opacity: "窗口透明度", windowLevel: "窗口层级",
     top: "始终置顶", normal: "普通窗口", desktop: "桌面模式", desktopHint: "桌面模式会隐藏任务栏图标，并保持在普通应用窗口下方。",
     lockPosition: "锁定窗口位置", clickThrough: "鼠标穿透", clickHint: "按 Ctrl + Shift + X 可随时开启或关闭鼠标穿透。", clickEnabled: "鼠标穿透已开启 · Ctrl + Shift + X 关闭", clickDisabled: "鼠标穿透已关闭",
-    showCalendar: "显示迷你日历", sound: "提醒声音", openAtLogin: "开机启动", closeSettings: "关闭设置", exitApp: "退出应用",
+    showCalendar: "显示迷你日历", showWeekNumbers: "显示周数（ISO）", sound: "提醒声音", openAtLogin: "开机启动", closeSettings: "关闭设置", exitApp: "退出应用",
     miniCalendar: "迷你日历", upcoming: "后续安排", noUpcoming: "暂无后续安排", noTasks: "这一天还没有任务，点击添加", addToday: "添加今天的任务",
     newTask: "新建任务", editTask: "编辑任务", arrangeWork: "安排你的工作", adjustTask: "调整任务安排",
     taskName: "任务名称", taskPlaceholder: "例如：准备项目汇报", date: "日期", time: "时间", reminder: "到点提醒",
@@ -94,7 +94,7 @@ const COPY = {
     language: "Language", chinese: "中文", english: "English", opacity: "Window opacity", windowLevel: "Window level",
     top: "Always on top", normal: "Normal window", desktop: "Desktop mode", desktopHint: "Desktop mode hides the taskbar icon and stays below normal app windows.",
     lockPosition: "Lock window position", clickThrough: "Click through", clickHint: "Press Ctrl + Shift + X to toggle click-through at any time.", clickEnabled: "Click-through on · Ctrl + Shift + X to turn off", clickDisabled: "Click-through off",
-    showCalendar: "Show mini calendar", sound: "Reminder sound", openAtLogin: "Launch at startup", closeSettings: "Close settings", exitApp: "Exit app",
+    showCalendar: "Show mini calendar", showWeekNumbers: "Show week numbers (ISO)", sound: "Reminder sound", openAtLogin: "Launch at startup", closeSettings: "Close settings", exitApp: "Exit app",
     miniCalendar: "Mini calendar", upcoming: "Upcoming", noUpcoming: "No upcoming tasks", noTasks: "No tasks for this day. Click to add one.", addToday: "Add a task for today",
     newTask: "New task", editTask: "Edit task", arrangeWork: "Plan your work", adjustTask: "Adjust task",
     taskName: "Task name", taskPlaceholder: "For example: Prepare project update", date: "Date", time: "Time", reminder: "Reminder",
@@ -125,6 +125,7 @@ const DEFAULT_SETTINGS = {
   clickThrough: false,
   openAtLogin: false,
   showCalendar: true,
+  showWeekNumbers: true,
   sound: true,
   language: "zh",
   theme: "classic",
@@ -154,6 +155,21 @@ function startOfWeek(date) {
   next.setDate(next.getDate() + offset);
   next.setHours(0, 0, 0, 0);
   return next;
+}
+
+function getISOWeekInfo(date) {
+  const current = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const weekday = current.getUTCDay() || 7;
+  current.setUTCDate(current.getUTCDate() + 4 - weekday);
+  const weekYear = current.getUTCFullYear();
+  const yearStart = new Date(Date.UTC(weekYear, 0, 1));
+  const week = Math.ceil((((current - yearStart) / 86_400_000) + 1) / 7);
+  return { week, year: weekYear };
+}
+
+function formatISOWeekTitle(date, copy) {
+  const { week, year } = getISOWeekInfo(date);
+  return copy === COPY.en ? `Week ${week}, ${year}` : `${year}年第${week}周`;
 }
 
 function formatMonthDay(date, copy) {
@@ -317,31 +333,51 @@ async function persistSettings(settings) {
   return settings;
 }
 
-function CalendarGrid({ cursor, selectedDate, onSelect, copy, compact = false }) {
+function CalendarGrid({ cursor, selectedDate, onSelect, copy, compact = false, showWeekNumbers = false }) {
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
   const first = new Date(year, month, 1);
-  const start = addDays(first, -first.getDay());
-  const cells = Array.from({ length: 42 }, (_, index) => addDays(start, index));
+  const mondayOffset = first.getDay() === 0 ? 6 : first.getDay() - 1;
+  const start = addDays(first, showWeekNumbers ? -mondayOffset : -first.getDay());
+  const weeks = Array.from({ length: 6 }, (_, weekIndex) => (
+    Array.from({ length: 7 }, (_, dayIndex) => addDays(start, weekIndex * 7 + dayIndex))
+  ));
+  const weekdayLabels = showWeekNumbers
+    ? [...copy.weekdayShort.slice(1), copy.weekdayShort[0]]
+    : copy.weekdayShort;
   const calendarTodayISO = localISO(new Date());
 
   return (
-    <div className={`calendar-grid ${compact ? "is-compact" : ""}`}>
-      {copy.weekdayShort.map((day, index) => <span className="weekday" key={`${day}-${index}`}>{day}</span>)}
-      {cells.map((date) => {
-        const iso = localISO(date);
-        const outside = date.getMonth() !== month;
-        const isToday = iso === calendarTodayISO;
+    <div className={`calendar-grid ${compact ? "is-compact" : ""} ${showWeekNumbers ? "with-week-numbers" : ""}`}>
+      {showWeekNumbers && <span className="week-number-heading" aria-hidden="true">W</span>}
+      {weekdayLabels.map((day, index) => <span className="weekday" key={`${day}-${index}`}>{day}</span>)}
+      {weeks.map((weekDates) => {
+        const weekStartDate = weekDates[0];
+        const weekInfo = getISOWeekInfo(showWeekNumbers ? weekStartDate : addDays(weekStartDate, 1));
         return (
-          <button
-            className={`calendar-day ${iso === selectedDate ? "selected" : ""} ${isToday ? "current-day" : ""} ${outside ? "outside" : ""} ${date.getDay() === 0 ? "sunday" : ""}`}
-            key={iso}
-            onClick={() => onSelect(iso)}
-            aria-label={formatMonthDay(date, copy)}
-          >
-            {date.getDate()}
-            {isToday && <span className="today-label">{copy.calendarToday}</span>}
-          </button>
+          <Fragment key={localISO(weekStartDate)}>
+            {showWeekNumbers && (
+              <span className="calendar-week-number" title={formatISOWeekTitle(weekStartDate, copy)}>
+                W{weekInfo.week}
+              </span>
+            )}
+            {weekDates.map((date) => {
+              const iso = localISO(date);
+              const outside = date.getMonth() !== month;
+              const isToday = iso === calendarTodayISO;
+              return (
+                <button
+                  className={`calendar-day ${iso === selectedDate ? "selected" : ""} ${isToday ? "current-day" : ""} ${outside ? "outside" : ""} ${date.getDay() === 0 ? "sunday" : ""}`}
+                  key={iso}
+                  onClick={() => onSelect(iso)}
+                  aria-label={formatMonthDay(date, copy)}
+                >
+                  {date.getDate()}
+                  {isToday && <span className="today-label">{copy.calendarToday}</span>}
+                </button>
+              );
+            })}
+          </Fragment>
         );
       })}
     </div>
@@ -673,6 +709,10 @@ function SettingsPanel({ settings, onChange, onClose, onClickThroughChange, copy
             <input type="checkbox" checked={settings.showCalendar} onChange={(event) => update("showCalendar", event.target.checked)} />
           </label>
           <label className="setting-row">
+            <span><CalendarCheck /> {copy.showWeekNumbers}</span>
+            <input type="checkbox" checked={settings.showWeekNumbers} onChange={(event) => update("showWeekNumbers", event.target.checked)} />
+          </label>
+          <label className="setting-row">
             <span><SpeakerHigh /> {copy.sound}</span>
             <input type="checkbox" checked={settings.sound} onChange={(event) => update("sound", event.target.checked)} />
           </label>
@@ -852,6 +892,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
   const upcomingTasks = sortTasks(tasks.filter((task) => !task.completed && task.date > localISO(new Date()))).slice(0, 12);
   const hasSidePanel = settings.showCalendar || upcomingTasks.length > 0;
   const isKittyTheme = settings.theme === "hello-kitty";
+  const selectedWeek = getISOWeekInfo(selected);
 
   function goToToday() {
     const current = new Date();
@@ -987,6 +1028,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
             <div>
               <h1 className={isKittyTheme ? "kitty-today-heading" : ""}>
                 {isKittyTheme ? <KittyWhiskers><span>{selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy)}</span> · {copy.weekdays[selected.getDay()]}</KittyWhiskers> : <><span>{selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy)}</span> · {copy.weekdays[selected.getDay()]}</>}
+                {settings.showWeekNumbers && <em className="week-number-badge" title={formatISOWeekTitle(selected, copy)}>W{selectedWeek.week}</em>}
               </h1>
               <p>{formatFullDate(selected, copy)}</p>
             </div>
@@ -1017,7 +1059,7 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
               <button className={`today-jump-button ${selectedDate === localISO(new Date()) ? "active" : ""}`} onClick={goToToday} title={copy.goToToday}>{copy.today}</button>
               <button className="icon-button" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}><CaretRight /></button>
             </header>
-            <CalendarGrid cursor={cursor} selectedDate={selectedDate} onSelect={setSelectedDate} copy={copy} compact />
+            <CalendarGrid cursor={cursor} selectedDate={selectedDate} onSelect={setSelectedDate} copy={copy} compact showWeekNumbers={settings.showWeekNumbers} />
           </div>}
           <UpcomingPanel tasks={upcomingTasks} onSelect={setSelectedDate} copy={copy} kitty={isKittyTheme} />
         </aside>}
@@ -1098,12 +1140,16 @@ function CompactView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, 
   const weekTasks = sortTasks(tasks.filter((task) => task.type === "week" && fromISO(task.date) >= weekStartDate && fromISO(task.date) <= weekEndDate));
   const monthTasks = sortTasks(tasks.filter((task) => task.type === "month" && fromISO(task.date).getFullYear() === selected.getFullYear() && fromISO(task.date).getMonth() === selected.getMonth()));
   const dateLabel = selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy);
+  const selectedWeek = getISOWeekInfo(selected);
 
   return (
     <div className="compact-view glass-panel">
       <header className="compact-header">
         <span className="drag-handle"><DotsSixVertical weight="bold" /></span>
-        <h1><span>{dateLabel}</span> · {selectedDate === localISO(new Date()) ? `${formatMonthDay(selected, copy)} ` : ""}{copy.weekdays[selected.getDay()]}</h1>
+        <h1>
+          <span>{dateLabel}</span> · {selectedDate === localISO(new Date()) ? `${formatMonthDay(selected, copy)} ` : ""}{copy.weekdays[selected.getDay()]}
+          {settings.showWeekNumbers && <em className="week-number-badge" title={formatISOWeekTitle(selected, copy)}>W{selectedWeek.week}</em>}
+        </h1>
         <button className="outline-button" onClick={() => setQuickAddOpen(true)}><Plus weight="bold" /> {copy.quickAdd}</button>
         <button className="icon-button" onClick={onOpenSettings} title={copy.displaySettings}><GearSix /></button>
         <button className="icon-button" onClick={onMicro} title={copy.microMode}><Minus /></button>
@@ -1118,7 +1164,7 @@ function CompactView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, 
             <strong>{formatMonth(cursor, copy)}</strong>
             <button className="icon-button" onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}><CaretRight /></button>
           </header>
-          <CalendarGrid cursor={cursor} selectedDate={selectedDate} onSelect={setSelectedDate} copy={copy} compact />
+          <CalendarGrid cursor={cursor} selectedDate={selectedDate} onSelect={setSelectedDate} copy={copy} compact showWeekNumbers={settings.showWeekNumbers} />
         </section>}
         <section className="compact-today">
           <h2><Check weight="bold" /> {selectedDate === localISO(new Date()) ? copy.todayTasks : copy.selectedTasks} <b>{dayTasks.length}</b></h2>
@@ -1142,11 +1188,12 @@ function CompactView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, 
   );
 }
 
-function MiniView({ tasks, selectedDate, copy, onToggle, onEdit, onMove, onQuickAdd, onExpand, onOpenSettings }) {
+function MiniView({ tasks, selectedDate, settings, copy, onToggle, onEdit, onMove, onQuickAdd, onExpand, onOpenSettings }) {
   const selected = fromISO(selectedDate);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const dayTasks = sortTasks(tasks.filter((task) => task.type === "day" && task.date === selectedDate));
   const remaining = dayTasks.filter((task) => !task.completed);
+  const selectedWeek = getISOWeekInfo(selected);
 
   return (
     <div className="micro-view glass-panel">
@@ -1154,6 +1201,7 @@ function MiniView({ tasks, selectedDate, copy, onToggle, onEdit, onMove, onQuick
         <div className="micro-date">
           <span>{selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy)}</span>
           <strong>{copy.weekdays[selected.getDay()]}</strong>
+          {settings.showWeekNumbers && <em className="week-number-badge" title={formatISOWeekTitle(selected, copy)}>W{selectedWeek.week}</em>}
         </div>
         <div>
           <button className="icon-button" onClick={() => setQuickAddOpen(true)} title={copy.quickAdd}><Plus /></button>
@@ -1529,6 +1577,7 @@ export function App() {
           <MiniView
             tasks={tasks}
             selectedDate={selectedDate}
+            settings={settings}
             copy={copy}
             onToggle={toggleTask}
             onEdit={openEditor}

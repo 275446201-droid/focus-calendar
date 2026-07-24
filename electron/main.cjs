@@ -203,6 +203,16 @@ async function loadSettings() {
     settingsCache.minimumFullSizeV4 = true;
     settingsChanged = true;
   }
+  if (!settingsCache.comfortableFullLayoutV5) {
+    const savedBounds = settingsCache.bounds || {};
+    settingsCache.bounds = {
+      ...savedBounds,
+      width: !Number.isFinite(savedBounds.width) || savedBounds.width <= 920 ? 1000 : savedBounds.width,
+      height: !Number.isFinite(savedBounds.height) || savedBounds.height <= 650 ? 700 : savedBounds.height,
+    };
+    settingsCache.comfortableFullLayoutV5 = true;
+    settingsChanged = true;
+  }
   if (settingsChanged) await writeJson(settingsPath(), settingsCache);
   return settingsCache;
 }
@@ -269,15 +279,15 @@ function createWindow() {
   const savedRect = {
     x: Number.isFinite(savedBounds.x) ? savedBounds.x : primaryWorkArea.x,
     y: Number.isFinite(savedBounds.y) ? savedBounds.y : primaryWorkArea.y,
-    width: Number.isFinite(savedBounds.width) ? savedBounds.width : 920,
-    height: Number.isFinite(savedBounds.height) ? savedBounds.height : 650,
+    width: Number.isFinite(savedBounds.width) ? savedBounds.width : 1000,
+    height: Number.isFinite(savedBounds.height) ? savedBounds.height : 700,
   };
   const workArea = screen.getDisplayMatching(savedRect).workArea;
   const margin = 10;
   const availableWidth = workArea.width - margin * 2;
   const availableHeight = workArea.height - margin * 2;
-  const minimumFullWidth = Math.min(920, availableWidth);
-  const minimumFullHeight = Math.min(650, availableHeight);
+  const minimumFullWidth = Math.min(760, availableWidth);
+  const minimumFullHeight = Math.min(520, availableHeight);
   const width = Math.min(Math.max(savedRect.width, minimumFullWidth), availableWidth);
   const height = Math.min(Math.max(savedRect.height, minimumFullHeight), availableHeight);
   const fallbackX = workArea.x + Math.round((workArea.width - width) / 2);
@@ -483,7 +493,7 @@ ipcMain.handle("window:set-mode", (_event, mode) => {
     target = fit(480, 320, 400, 260);
   } else {
     mainWindow.setMinimumSize(760, 520);
-    target = fit(920, 650, 760, 520);
+    target = fit(1000, 700, 760, 520);
   }
   stableContentSize = [target.width, target.height];
   mainWindow.setBounds({

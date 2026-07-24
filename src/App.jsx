@@ -1028,9 +1028,11 @@ function FullView({ tasks, selectedDate, setSelectedDate, cursor, setCursor, set
             <div>
               <h1 className={isKittyTheme ? "kitty-today-heading" : ""}>
                 {isKittyTheme ? <KittyWhiskers><span>{selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy)}</span> · {copy.weekdays[selected.getDay()]}</KittyWhiskers> : <><span>{selectedDate === localISO(new Date()) ? copy.today : formatMonthDay(selected, copy)}</span> · {copy.weekdays[selected.getDay()]}</>}
-                {settings.showWeekNumbers && <em className="week-number-badge" title={formatISOWeekTitle(selected, copy)}>W{selectedWeek.week}</em>}
               </h1>
-              <p>{formatFullDate(selected, copy)}</p>
+              <p className="panel-date-meta">
+                <span>{formatFullDate(selected, copy)}</span>
+                {settings.showWeekNumbers && <em className="week-number-badge" title={formatISOWeekTitle(selected, copy)}>W{selectedWeek.week}</em>}
+              </p>
             </div>
             <div className="header-actions">
               <button className="outline-button" onClick={() => onAdd("day")}><Plus weight="bold" /> {copy.addTask}</button>

@@ -135,8 +135,8 @@ input:focus-visible {
   overflow: hidden;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: clamp(68px, 12vh, 84px) minmax(300px, 1fr) clamp(132px, 24vh, 160px);
-  gap: 10px;
+  grid-template-rows: clamp(72px, 11vh, 84px) minmax(300px, 1fr) clamp(146px, 23vh, 170px);
+  gap: 12px;
 }
 
 .week-strip {
@@ -202,7 +202,7 @@ input:focus-visible {
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(300px, 0.96fr);
-  gap: 10px;
+  gap: 12px;
   min-height: 0;
   height: 100%;
 }
@@ -230,8 +230,8 @@ input:focus-visible {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 18px;
+  gap: 18px;
+  margin-bottom: 14px;
   user-select: none;
   cursor: default;
 }
@@ -280,9 +280,31 @@ input:focus-visible {
   font-size: 14px;
 }
 
-.header-actions {
+.panel-date-meta {
   display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.panel-date-meta .week-number-badge {
+  min-width: 40px;
+  height: 22px;
+  margin-left: 0;
+  padding: 0 7px;
+  font-size: 11px;
+  transform: none;
+}
+
+.header-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
   gap: 10px;
+}
+
+.panel-header .outline-button {
+  min-width: 122px;
+  white-space: nowrap;
 }
 
 .outline-button,
@@ -1815,6 +1837,27 @@ input:focus-visible {
   .overview-panel {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     overflow: hidden;
+  }
+}
+
+@media (max-height: 590px) and (min-width: 700px) {
+  .full-view {
+    grid-template-rows: 68px minmax(290px, 1fr) 138px;
+    gap: 8px;
+  }
+
+  .week-strip button {
+    padding: 8px 8px 6px;
+    gap: 3px;
+  }
+
+  .today-panel {
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  .panel-header {
+    margin-bottom: 10px;
   }
 }
 
